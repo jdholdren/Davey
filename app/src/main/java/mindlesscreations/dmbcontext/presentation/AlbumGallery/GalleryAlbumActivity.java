@@ -1,18 +1,15 @@
 package mindlesscreations.dmbcontext.presentation.AlbumGallery;
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import mindlesscreations.dmbcontext.R;
 import mindlesscreations.dmbcontext.domain.entities.Album;
 import mindlesscreations.dmbcontext.presentation.base.BaseActivity;
@@ -29,6 +26,7 @@ public class GalleryAlbumActivity extends BaseActivity<AlbumGalleryComponent> im
 
     // Items needed for recycler view
     private RecyclerView.LayoutManager manager;
+    private AlbumAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,21 +35,26 @@ public class GalleryAlbumActivity extends BaseActivity<AlbumGalleryComponent> im
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        List<Album> list = new ArrayList<>();
-        list.add(new Album("Stand Up", "http://davematthewsband.com/wp-content/uploads/albums/DMDD96-292x292.jpg", new Date()));
         // Create the manager
-        this.manager = new LinearLayoutManager(this);
+        this.manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        this.adapter = new AlbumAdapter(this);
         // Attach adapter and manager to recyclerView
         this.recyclerView = (RecyclerView) this.findViewById(R.id.gallery_recycler_view);
-        this.recyclerView.setAdapter(new AlbumAdapter(list, this));
+        this.recyclerView.setAdapter(this.adapter);
         this.recyclerView.setLayoutManager(this.manager);
 
         presenter.getAlbums();
     }
 
     @Override
-    public void addAlbums() {
-        // TODO: Add albums to the adapter
+    protected void onDestroy() {
+        super.onDestroy();
+        this.presenter.destroy();
+    }
+
+    @Override
+    public void addAlbums(List<Album> albums) {
+        this.adapter.addAll(albums);
     }
 
     @Override

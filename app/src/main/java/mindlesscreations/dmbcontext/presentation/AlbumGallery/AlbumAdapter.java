@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mindlesscreations.dmbcontext.R;
@@ -20,8 +21,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     private List<Album> albums;
     private Context context;
 
-    public AlbumAdapter(List<Album> albums, Context context) {
-        this.albums = albums;
+    public AlbumAdapter(Context context) {
+        this.albums = new ArrayList<>();
         this.context = context;
     }
 
@@ -41,7 +42,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
         // Load the image name
         Picasso.with(holder.albumImage.getContext())
-                .load(album.getCoverUrl()).fit().centerCrop().into(holder.albumImage);
+                .load(album.getCoverurl()).fit().centerCrop().into(holder.albumImage);
 
         // Set the name
         holder.albumName.setText(album.getName());
@@ -50,6 +51,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     @Override
     public int getItemCount() {
         return this.albums.size();
+    }
+
+    public void addAll(List<Album> albums) {
+        this.albums.addAll(albums);
+        this.notifyDataSetChanged();
     }
 
     public class AlbumViewHolder extends RecyclerView.ViewHolder {

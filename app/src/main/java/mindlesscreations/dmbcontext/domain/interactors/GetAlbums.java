@@ -1,5 +1,8 @@
 package mindlesscreations.dmbcontext.domain.interactors;
 
+import java.util.List;
+
+import mindlesscreations.dmbcontext.domain.entities.Album;
 import mindlesscreations.dmbcontext.execution.PostExecutionThread;
 import mindlesscreations.dmbcontext.execution.ThreadExecutor;
 import rx.Observable;
@@ -17,10 +20,10 @@ public class GetAlbums extends UseCase {
 
     @Override
     protected Observable buildUseCaseObservable() {
-        return null;
+        return this.repo.getAlbums();
     }
 
     public interface GetAllAlbumsRepo {
-
+        Observable<List<Album>> getAlbums();
     }
 }

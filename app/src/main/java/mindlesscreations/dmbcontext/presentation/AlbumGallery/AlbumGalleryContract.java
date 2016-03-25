@@ -1,5 +1,8 @@
 package mindlesscreations.dmbcontext.presentation.AlbumGallery;
 
+import java.util.List;
+
+import mindlesscreations.dmbcontext.domain.entities.Album;
 import mindlesscreations.dmbcontext.presentation.base.BasePresenter;
 
 public interface AlbumGalleryContract {
@@ -8,6 +11,6 @@ public interface AlbumGalleryContract {
     }
 
     interface View {
-        void addAlbums();
+        void addAlbums(List<Album> albums);
     }
 }

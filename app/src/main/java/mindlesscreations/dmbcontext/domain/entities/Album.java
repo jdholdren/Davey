@@ -3,12 +3,17 @@ package mindlesscreations.dmbcontext.domain.entities;
 import java.util.Date;
 
 public class Album {
-    private final String name;
-    private final String coverUrl;
-    private final Date releaseDate;
 
-    public Album(String name, String coverUrl, Date releaseDate) {
-        this.coverUrl = coverUrl;
+    private String name;
+
+    private String coverurl;
+
+    private Date releaseDate;
+
+    public Album() {}
+
+    public Album(String name, String coverurl, Date releaseDate) {
+        this.coverurl = coverurl;
         this.name = name;
         this.releaseDate = releaseDate;
     }
@@ -17,8 +22,8 @@ public class Album {
         return name;
     }
 
-    public String getCoverUrl() {
-        return coverUrl;
+    public String getCoverurl() {
+        return coverurl;
     }
 
     public Date getReleaseDate() {

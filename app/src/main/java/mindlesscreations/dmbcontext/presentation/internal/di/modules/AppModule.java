@@ -7,12 +7,15 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import mindlesscreations.dmbcontext.data.apis.Api;
+import mindlesscreations.dmbcontext.data.apis.RetrofitApi;
 import mindlesscreations.dmbcontext.data.repositories.AlbumRepository;
 import mindlesscreations.dmbcontext.domain.interactors.GetAlbums;
 import mindlesscreations.dmbcontext.execution.JobExecutor;
 import mindlesscreations.dmbcontext.execution.PostExecutionThread;
 import mindlesscreations.dmbcontext.execution.ThreadExecutor;
 import mindlesscreations.dmbcontext.execution.UIThread;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 public class AppModule {
@@ -48,8 +51,19 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public AlbumRepository.AlbumApi provideAlbumApi() {
-        return new Api();
+    public RetrofitApi provideRetrofitApi() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://serene-lowlands-70032.herokuapp.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        return retrofit.create(RetrofitApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public AlbumRepository.AlbumApi provideAlbumApi(RetrofitApi rApi) {
+        return new Api(rApi);
     }
 
     @Provides
@@ -57,4 +71,6 @@ public class AppModule {
     public UIThread provideUIThread() {
         return new UIThread();
     }
+
+
 }
