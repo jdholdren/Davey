@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Davey</string>
+    <string name="title_activity_album_gallery">AlbumGalleryActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+</resources>
