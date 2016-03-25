@@ -25,7 +25,6 @@ public class GalleryAlbumActivity extends BaseActivity<AlbumGalleryComponent> im
     @Inject
     public AlbumGalleryContract.Presenter presenter;
 
-    @Bind(R.id.gallery_recycler_view)
     public RecyclerView recyclerView;
 
     // Items needed for recycler view
@@ -58,6 +57,7 @@ public class GalleryAlbumActivity extends BaseActivity<AlbumGalleryComponent> im
     @Override
     protected AlbumGalleryComponent buildComponent() {
         return DaggerAlbumGalleryComponent.builder()
+                .appComponent(this.getApplicationComponent())
                 .albumGalleryModule(new AlbumGalleryModule(this))
                 .build();
     }

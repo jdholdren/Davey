@@ -10,16 +10,18 @@ import mindlesscreations.dmbcontext.domain.interactors.GetAlbums;
 import mindlesscreations.dmbcontext.execution.PostExecutionThread;
 import mindlesscreations.dmbcontext.execution.ThreadExecutor;
 import mindlesscreations.dmbcontext.execution.UIThread;
+import mindlesscreations.dmbcontext.presentation.DMBCApplication;
 import mindlesscreations.dmbcontext.presentation.internal.di.modules.AppModule;
 
 @Singleton
 @Component(modules = AppModule.class)
 public interface AppComponent {
+    Application app();
     ThreadExecutor executor();
     PostExecutionThread postExecThread();
     GetAlbums.GetAllAlbumsRepo repo();
     AlbumRepository.AlbumApi api();
     UIThread uiThread();
 
-    void inject(Application app);
+    void inject(DMBCApplication app);
 }

@@ -24,6 +24,12 @@ public class AppModule {
 
     @Provides
     @Singleton
+    public Application provideApp() {
+        return this.app;
+    }
+
+    @Provides
+    @Singleton
     public ThreadExecutor provideThreadExecutor() {
         return new JobExecutor();
     }
