@@ -1,10 +1,11 @@
 package mindlesscreations.dmbcontext.presentation.AlbumGallery;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import java.util.List;
 
@@ -12,12 +13,14 @@ import javax.inject.Inject;
 
 import mindlesscreations.dmbcontext.R;
 import mindlesscreations.dmbcontext.domain.entities.Album;
+import mindlesscreations.dmbcontext.presentation.AlbumSongListing.AlbumSongListingActivity;
 import mindlesscreations.dmbcontext.presentation.base.BaseActivity;
 import mindlesscreations.dmbcontext.presentation.internal.di.components.AlbumGalleryComponent;
 import mindlesscreations.dmbcontext.presentation.internal.di.components.DaggerAlbumGalleryComponent;
 import mindlesscreations.dmbcontext.presentation.internal.di.modules.AlbumGalleryModule;
 
-public class GalleryAlbumActivity extends BaseActivity<AlbumGalleryComponent> implements AlbumGalleryContract.View {
+public class GalleryAlbumActivity extends BaseActivity<AlbumGalleryComponent>
+        implements AlbumGalleryContract.View, AlbumAdapter.IndexOnClickListener {
 
     @Inject
     public AlbumGalleryContract.Presenter presenter;
@@ -47,6 +50,11 @@ public class GalleryAlbumActivity extends BaseActivity<AlbumGalleryComponent> im
     }
 
     @Override
+    public void onClick(View v, int index) {
+        this.presenter.albumClicked(this.adapter.get(index).getName());
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         this.presenter.destroy();
@@ -55,6 +63,14 @@ public class GalleryAlbumActivity extends BaseActivity<AlbumGalleryComponent> im
     @Override
     public void addAlbums(List<Album> albums) {
         this.adapter.addAll(albums);
+    }
+
+    @Override
+    public void navigateToAlbumListing(String albumName) {
+        Intent intent = new Intent(this, AlbumSongListingActivity.class);
+        intent.putExtra(AlbumSongListingActivity.EXTRA_ALBUM_NAME, albumName);
+
+        this.startActivity(intent);
     }
 
     @Override

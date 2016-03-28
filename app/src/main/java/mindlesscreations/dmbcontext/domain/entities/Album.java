@@ -5,9 +5,7 @@ import java.util.Date;
 public class Album {
 
     private String name;
-
     private String coverurl;
-
     private Date releaseDate;
 
     public Album() {}
@@ -22,7 +20,7 @@ public class Album {
         return name;
     }
 
-    public String getCoverurl() {
+    public String getCoverUrl() {
         return coverurl;
     }
 

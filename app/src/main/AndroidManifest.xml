@@ -14,12 +14,22 @@
         <activity
             android:name=".presentation.AlbumGallery.GalleryAlbumActivity"
             android:label="@string/title_activity_main"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".presentation.AlbumSongListing.AlbumSongListingActivity"
+            android:label="@string/title_activity_album_song_listing"
+            android:parentActivityName=".presentation.AlbumGallery.GalleryAlbumActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mindlesscreations.dmbcontext.presentation.AlbumGallery.GalleryAlbumActivity" />
         </activity>
     </application>
 

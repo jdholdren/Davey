@@ -8,7 +8,7 @@ import mindlesscreations.dmbcontext.domain.entities.Album;
 import mindlesscreations.dmbcontext.domain.interactors.DefaultSubscriber;
 import mindlesscreations.dmbcontext.domain.interactors.UseCase;
 
-public class AlbumGalleryPresenter extends AlbumGalleryContract.Presenter {
+public class AlbumGalleryPresenter implements AlbumGalleryContract.Presenter {
 
     private UseCase useCase;
     private AlbumGalleryContract.View view;
@@ -21,6 +21,11 @@ public class AlbumGalleryPresenter extends AlbumGalleryContract.Presenter {
     @Override
     public void getAlbums() {
         this.useCase.execute(new AlbumListSubscriber());
+    }
+
+    @Override
+    public void albumClicked(String albumName) {
+        this.view.navigateToAlbumListing(albumName);
     }
 
     @Override

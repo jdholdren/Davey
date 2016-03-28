@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Davey</string>
     <string name="title_activity_main">Albums</string>
+    <string name="title_activity_album_song_listing">AlbumSongListingActivity</string>
 </resources>
