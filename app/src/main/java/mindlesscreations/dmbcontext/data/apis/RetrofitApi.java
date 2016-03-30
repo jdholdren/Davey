@@ -10,4 +10,10 @@ public interface RetrofitApi {
 
     @GET("songs/{albumName}")
     Call<Api.ListSongsOnAlbumResponse> getSongsOnAlbum(@Path("albumName") String albumName);
+
+    @GET("/songs/studioPerformance/{songId}")
+    Call<Api.StudioPerformanceResponse> getStudioPerformance(@Path("songId") int songId);
+
+    @GET("/songs/alternatePerformances/{songId}")
+    Call<Api.ListAlternateLyricsResponse> getAlternatePerformances(@Path("songId") int songId);
 }

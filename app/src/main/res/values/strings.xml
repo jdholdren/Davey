@@ -2,4 +2,8 @@
     <string name="app_name">Davey</string>
     <string name="title_activity_main">Albums</string>
     <string name="title_activity_album_song_listing">AlbumSongListingActivity</string>
+    <string name="title_activity_lyrics">LyricsActivity</string>
+    <string name="studio_lryics_label">Studio Lryics</string>
+    <string name="instrumental_message">Instrumental</string>
+    <string name="alternate_lyrics">Alternate Lyrics</string>
 </resources>

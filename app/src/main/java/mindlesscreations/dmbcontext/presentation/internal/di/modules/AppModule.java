@@ -11,6 +11,7 @@ import mindlesscreations.dmbcontext.data.apis.RetrofitApi;
 import mindlesscreations.dmbcontext.data.repositories.AlbumRepository;
 import mindlesscreations.dmbcontext.domain.interactors.GetAlbums;
 import mindlesscreations.dmbcontext.domain.interactors.GetSongsOnAlbum;
+import mindlesscreations.dmbcontext.domain.interactors.GetPerformanceLyrics;
 import mindlesscreations.dmbcontext.execution.JobExecutor;
 import mindlesscreations.dmbcontext.execution.PostExecutionThread;
 import mindlesscreations.dmbcontext.execution.ThreadExecutor;
@@ -80,6 +81,12 @@ public class AppModule {
 
     @Provides
     @Singleton public GetSongsOnAlbum.GetSongsOnAlbumRepo provideSongsOnAlbumRepo(AlbumRepository repo) {
+        return repo;
+    }
+
+    @Provides
+    @Singleton
+    public GetPerformanceLyrics.GetPerformanceRepo provideStudioPerformanceRepo(AlbumRepository repo) {
         return repo;
     }
 }

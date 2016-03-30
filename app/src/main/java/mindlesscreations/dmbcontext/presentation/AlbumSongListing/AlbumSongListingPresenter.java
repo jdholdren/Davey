@@ -30,6 +30,11 @@ public class AlbumSongListingPresenter implements AlbumSongListingContract.Prese
     }
 
     @Override
+    public void songClicked(Song song) {
+        this.view.navigateToLyrics(song);
+    }
+
+    @Override
     public void destroy() {
         if (this.interactor != null) {
             this.interactor.unsubscribe();

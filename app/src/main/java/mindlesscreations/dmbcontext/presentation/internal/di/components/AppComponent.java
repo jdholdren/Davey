@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import mindlesscreations.dmbcontext.data.repositories.AlbumRepository;
 import mindlesscreations.dmbcontext.domain.interactors.GetAlbums;
+import mindlesscreations.dmbcontext.domain.interactors.GetPerformanceLyrics;
 import mindlesscreations.dmbcontext.domain.interactors.GetSongsOnAlbum;
 import mindlesscreations.dmbcontext.execution.PostExecutionThread;
 import mindlesscreations.dmbcontext.execution.ThreadExecutor;
@@ -25,6 +26,7 @@ public interface AppComponent {
     AlbumRepository.AlbumApi api();
     UIThread uiThread();
     GetSongsOnAlbum.GetSongsOnAlbumRepo albumSongsRepo();
+    GetPerformanceLyrics.GetPerformanceRepo studioPerformanceRepo();
 
     void inject(DMBCApplication app);
 }

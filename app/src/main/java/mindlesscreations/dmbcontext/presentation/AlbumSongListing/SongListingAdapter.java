@@ -11,14 +11,17 @@ import java.util.List;
 
 import mindlesscreations.dmbcontext.R;
 import mindlesscreations.dmbcontext.domain.entities.Song;
+import mindlesscreations.dmbcontext.presentation.AlbumGallery.AlbumAdapter;
 
 public class SongListingAdapter
         extends RecyclerView.Adapter<SongListingAdapter.SongListingViewHolder> {
 
     private List<Song> songs;
+    private SongListingAdapter.IndexedOnClickListener listener;
 
-    public SongListingAdapter() {
+    public SongListingAdapter(IndexedOnClickListener listener) {
         this.songs = new ArrayList<>();
+        this.listener = listener;
     }
 
     @Override
@@ -44,13 +47,27 @@ public class SongListingAdapter
         this.notifyDataSetChanged();
     }
 
-    public class SongListingViewHolder extends RecyclerView.ViewHolder {
+    public Song get(int index) {
+        return this.songs.get(index);
+    }
+
+    public class SongListingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView songTitle;
 
         public SongListingViewHolder(View itemView) {
             super(itemView);
 
             this.songTitle = (TextView) itemView.findViewById(R.id.song_title);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            SongListingAdapter.this.listener.onClick(v, this.getAdapterPosition());
+        }
+    }
+
+    public interface IndexedOnClickListener {
+        void onClick(View v, int index);
     }
 }

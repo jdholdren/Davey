@@ -5,21 +5,22 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
 import mindlesscreations.dmbcontext.R;
 import mindlesscreations.dmbcontext.domain.entities.Song;
+import mindlesscreations.dmbcontext.presentation.Lyrics.LyricsActivity;
 import mindlesscreations.dmbcontext.presentation.base.BaseActivity;
 import mindlesscreations.dmbcontext.presentation.internal.di.components.AlbumSongListingComponent;
 import mindlesscreations.dmbcontext.presentation.internal.di.components.DaggerAlbumSongListingComponent;
 import mindlesscreations.dmbcontext.presentation.internal.di.modules.AlbumSongListingModule;
 
 public class AlbumSongListingActivity extends BaseActivity<AlbumSongListingComponent>
-        implements AlbumSongListingContract.View {
+        implements AlbumSongListingContract.View, SongListingAdapter.IndexedOnClickListener {
 
     public static final String EXTRA_ALBUM_NAME
             = "mindlesscreations.dmbcontext.presentation.AlbumListing.EXTRA.AlbumName";
@@ -29,8 +30,7 @@ public class AlbumSongListingActivity extends BaseActivity<AlbumSongListingCompo
     private RecyclerView.LayoutManager layoutManger;
     private SongListingAdapter adapter;
 
-
-    public RecyclerView songListing;
+    private RecyclerView songListing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class AlbumSongListingActivity extends BaseActivity<AlbumSongListingCompo
         getSupportActionBar().setTitle(albumName);
 
         // Prep the recycler
-        this.adapter = new SongListingAdapter();
+        this.adapter = new SongListingAdapter(this);
         this.layoutManger = new LinearLayoutManager(this);
         this.songListing.setLayoutManager(this.layoutManger);
         this.songListing.setAdapter(this.adapter);
@@ -61,6 +61,20 @@ public class AlbumSongListingActivity extends BaseActivity<AlbumSongListingCompo
     @Override
     public void displaySongs(List<Song> songs) {
         this.adapter.addAll(songs);
+    }
+
+    @Override
+    public void navigateToLyrics(Song song) {
+        Intent intent = new Intent(this, LyricsActivity.class);
+        intent.putExtra(LyricsActivity.EXTRA_SONG_ID, song.getId());
+        intent.putExtra(LyricsActivity.EXTRA_SONG_NAME, song.getName());
+
+        this.startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View v, int index) {
+        this.presenter.songClicked(this.adapter.get(index));
     }
 
     @Override

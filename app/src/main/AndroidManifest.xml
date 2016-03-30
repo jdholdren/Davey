@@ -25,11 +25,21 @@
         <activity
             android:name=".presentation.AlbumSongListing.AlbumSongListingActivity"
             android:label="@string/title_activity_album_song_listing"
+            android:launchMode="singleTop"
             android:parentActivityName=".presentation.AlbumGallery.GalleryAlbumActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mindlesscreations.dmbcontext.presentation.AlbumGallery.GalleryAlbumActivity" />
+        </activity>
+        <activity
+            android:name=".presentation.Lyrics.LyricsActivity"
+            android:label="@string/title_activity_lyrics"
+            android:parentActivityName=".presentation.AlbumSongListing.AlbumSongListingActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mindlesscreations.dmbcontext.presentation.AlbumSongListing.AlbumSongListingActivity" />
         </activity>
     </application>
 

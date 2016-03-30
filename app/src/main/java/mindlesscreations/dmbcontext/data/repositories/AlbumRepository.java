@@ -3,14 +3,18 @@ package mindlesscreations.dmbcontext.data.repositories;
 import java.util.List;
 
 import mindlesscreations.dmbcontext.domain.entities.Album;
+import mindlesscreations.dmbcontext.domain.entities.Performance;
 import mindlesscreations.dmbcontext.domain.entities.Song;
 import mindlesscreations.dmbcontext.domain.interactors.GetAlbums;
+import mindlesscreations.dmbcontext.domain.interactors.GetPerformanceLyrics;
 import mindlesscreations.dmbcontext.domain.interactors.GetSongsOnAlbum;
 import rx.Observable;
 import rx.Subscriber;
 
 public class AlbumRepository
-        implements GetAlbums.GetAllAlbumsRepo, GetSongsOnAlbum.GetSongsOnAlbumRepo {
+        implements GetAlbums.GetAllAlbumsRepo,
+        GetSongsOnAlbum.GetSongsOnAlbumRepo,
+        GetPerformanceLyrics.GetPerformanceRepo {
 
     private AlbumApi api;
 
@@ -47,8 +51,40 @@ public class AlbumRepository
         });
     }
 
+    @Override
+    public Observable<Performance> getStudioPerformance(int songId) {
+        final AlbumApi albumApi = this.api;
+        final int songID = songId;
+
+        return Observable.create(new Observable.OnSubscribe<Performance>() {
+            @Override
+            public void call(Subscriber<? super Performance> subscriber) {
+                Performance performance = albumApi.findStudioPerformance(songID);
+                subscriber.onNext(performance);
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Performance>> getAlternatePerformances(int songId) {
+        final AlbumApi albumApi = this.api;
+        final int songID = songId;
+
+        return Observable.create(new Observable.OnSubscribe<List<Performance>>() {
+            @Override
+            public void call(Subscriber<? super List<Performance>> subscriber) {
+                List<Performance> alts = albumApi.findAllAlternateLyrics(songID);
+                subscriber.onNext(alts);
+                subscriber.onCompleted();
+            }
+        });
+    }
+
     public interface AlbumApi {
         List<Album> findAll();
         List<Song> findAllByAlbum(String albumName);
+        Performance findStudioPerformance(int songId);
+        List<Performance> findAllAlternateLyrics(int songId);
     }
 }
