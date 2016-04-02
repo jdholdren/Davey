@@ -8,4 +8,6 @@
     <string name="alternate_lyrics">Alternate Lyric Versions</string>
     <string name="show_more">Show More</string>
     <string name="show_less">Show Less</string>
+    <string name="search_title">Search For Lyrics</string>
+    <string name="search_hint">Saerch for a Lyric</string>
 </resources>
