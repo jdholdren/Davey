@@ -3,6 +3,7 @@ package mindlesscreations.dmbcontext.data.apis;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RetrofitApi {
     @GET("albums")
@@ -11,9 +12,9 @@ public interface RetrofitApi {
     @GET("songs/{albumName}")
     Call<Api.ListSongsOnAlbumResponse> getSongsOnAlbum(@Path("albumName") String albumName);
 
-    @GET("/songs/studioPerformance/{songId}")
-    Call<Api.StudioPerformanceResponse> getStudioPerformance(@Path("songId") int songId);
+    @GET("/performances")
+    Call<Api.PerformanceResponse> getStudioPerformance(@Query("song_id") int songId);
 
-    @GET("/songs/alternatePerformances/{songId}")
-    Call<Api.ListAlternateLyricsResponse> getAlternatePerformances(@Path("songId") int songId);
+    @GET("performances")
+    Call<Api.PerformanceResponse> getPerformance(@Query("perf_id") int perfId);
 }

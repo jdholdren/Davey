@@ -3,7 +3,12 @@ package mindlesscreations.dmbcontext.presentation.Lyrics;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.ArrayAdapter;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,8 +32,17 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
     public static final String EXTRA_SONG_NAME
             = "mindlesscreations.dmbcontext.presentation.Lyrics.extras.SONG_NAME";
 
+    public static final String EXTRA_PERFORMANCE_ID
+            = "mindlesscreations.dmbcontext.presentation.Lyrics.extras.PERF_ID";
+
     private TextView lyrics;
     private ListView alternateLyrics;
+    private TextView lyricsVersionTitle;
+    private Button showButton;
+
+    // If the lyrics have been expanded or not
+    private boolean lyricsExpanded;
+    private String songName;
 
     @Inject
     public LyricsContract.Presenter presenter;
@@ -40,38 +54,109 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        this.lyrics = (TextView) this.findViewById(R.id.lyics_text);
+        this.lyrics = (TextView) this.findViewById(R.id.lyrics_text);
         this.alternateLyrics = (ListView) this.findViewById(R.id.alternate_dates);
-
-        // Set up adapter
-        this.alternateLyrics.setAdapter(new AlternatePerfAdapter(this, R.layout.alternate_lyric_item, new ArrayList<Performance>()));
+        this.lyricsVersionTitle = (TextView) this.findViewById(R.id.lyrics_version_title);
+        this.showButton = (Button) this.findViewById(R.id.show_more_less);
 
         // Grab the intent
         Intent intent = this.getIntent();
-        String songName = intent.getStringExtra(EXTRA_SONG_NAME).trim();
+        this.songName = intent.getStringExtra(EXTRA_SONG_NAME).trim();
         int songId = intent.getIntExtra(EXTRA_SONG_ID, -1);
+        int perfId = intent.getIntExtra(EXTRA_PERFORMANCE_ID, -1);
 
         // Set the title
-        this.getSupportActionBar().setTitle(songName);
+        this.getSupportActionBar().setTitle(this.songName);
 
         // Grab the lyrics
-        this.presenter.loadStudioPerformance(songId);
+        this.presenter.fetchPerformance(songId, perfId);
 
-        // Grab the alternate list
-        this.presenter.loadAlternateLyrics(songId);
+        // Attach click logic to expansion
+        this.showButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LyricsActivity.this.toggleLyrics();
+            }
+        });
+
+        this.alternateLyrics.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlternatePerfAdapter.AlternatePerfHolder vh = (AlternatePerfAdapter.AlternatePerfHolder) view.getTag();
+                LyricsActivity.this.presenter.alternateClicked(vh.performance);
+            }
+        });
     }
 
     @Override
-    public void displayLyrics(String lyrics) {
-        if (lyrics.isEmpty()) {
+    public void displayLyrics(Performance performance) {
+        if (performance.getLyrics().isEmpty()) {
             this.lyrics.setText(R.string.instrumental_message);
         } else {
-            this.lyrics.setText(lyrics);
+            this.lyrics.setText(performance.getLyrics());
         }
+
+        // Set the title
+        String title;
+        if (performance.isStudio()) {
+            title = this.getResources().getString(R.string.studio_lryics_label);
+        } else {
+            title = performance.getPerformanceDate().toString();
+        }
+
+        this.lyricsVersionTitle.setText(title);
     }
 
     @Override
-    public void displayAlternates(List<Performance> performance) {
+    public void displayAlternates(List<Performance> performances) {
+        ViewGroup.LayoutParams params = this.alternateLyrics.getLayoutParams();
+        AlternatePerfAdapter adapter = new AlternatePerfAdapter(this, R.layout.alternate_lyric_item, performances);
+        this.alternateLyrics.setAdapter(adapter);
+        int sizeInDp = 50;
+        int sizeInPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                sizeInDp, this.getResources().getDisplayMetrics());
+        params.height = adapter.getCount() * sizeInPx;
+        this.alternateLyrics.setLayoutParams(params);
+    }
+
+    /**
+     * Toggles the expansion of the lyrics
+     */
+    private void toggleLyrics() {
+        // Do calculations up front
+        int minInDp = 100;
+        int minInPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                minInDp, this.getResources().getDisplayMetrics());
+
+        int maxSize = this.lyrics.getLineHeight() * this.lyrics.getLineCount();
+
+        ViewGroup.LayoutParams params = this.lyrics.getLayoutParams();
+
+        // The button text to set
+        String buttonText;
+
+        if (this.lyricsExpanded) {
+            // Close the lyrics section
+            params.height = minInPx;
+            buttonText = this.getResources().getString(R.string.show_more);
+        } else {
+            // Open the lyrics section
+            params.height = maxSize;
+            buttonText = this.getResources().getString(R.string.show_less);
+        }
+
+        this.lyrics.setLayoutParams(params);
+        this.showButton.setText(buttonText);
+        this.lyricsExpanded = !this.lyricsExpanded;
+    }
+
+    @Override
+    public void navigateToPerformance(Performance performance) {
+        Intent intent = new Intent(this, this.getClass());
+        intent.putExtra(EXTRA_PERFORMANCE_ID, performance.getId());
+        intent.putExtra(EXTRA_SONG_NAME, this.songName);
+
+        this.startActivity(intent);
     }
 
     @Override

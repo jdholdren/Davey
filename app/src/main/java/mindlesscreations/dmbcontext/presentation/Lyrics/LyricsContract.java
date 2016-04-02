@@ -7,12 +7,13 @@ import mindlesscreations.dmbcontext.domain.entities.Performance;
 public interface LyricsContract {
     interface Presenter {
         void destroy();
-        void loadStudioPerformance(int songId);
-        void loadAlternateLyrics(int songId);
+        void fetchPerformance(int songId, int perfId);
+        void alternateClicked(Performance performance);
     }
 
     interface View {
-        void displayLyrics(String lyrics);
+        void displayLyrics(Performance performace);
         void displayAlternates(List<Performance> performance);
+        void navigateToPerformance(Performance performance);
     }
 }

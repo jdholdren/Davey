@@ -55,9 +55,9 @@ public class Api implements AlbumRepository.AlbumApi {
     public Performance findStudioPerformance(int songId) {
         Performance performance = null;
 
-        Call<StudioPerformanceResponse> call = this.retrofitApi.getStudioPerformance(songId);
+        Call<PerformanceResponse> call = this.retrofitApi.getStudioPerformance(songId);
         try {
-            Response<StudioPerformanceResponse> res = call.execute();
+            Response<PerformanceResponse> res = call.execute();
             performance = res.body().performance;
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,22 +67,18 @@ public class Api implements AlbumRepository.AlbumApi {
     }
 
     @Override
-    public List<Performance> findAllAlternateLyrics(int songId) {
-        List<Performance> performances = new ArrayList<>();
+    public Performance findPerformanceById(int perfId) {
+        Performance performance = null;
 
-        Call<ListAlternateLyricsResponse> call = this.retrofitApi.getAlternatePerformances(songId);
+        Call<PerformanceResponse> call = this.retrofitApi.getPerformance(perfId);
         try {
-            Response<ListAlternateLyricsResponse> res = call.execute();
-            performances.addAll(res.body().alternatePerformances);
+            Response<PerformanceResponse> res = call.execute();
+            performance = res.body().performance;
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return performances;
-    }
-
-    public class ListAlternateLyricsResponse {
-        public List<Performance> alternatePerformances;
+        return performance;
     }
 
     public class ListAlbumResponse {
@@ -93,7 +89,7 @@ public class Api implements AlbumRepository.AlbumApi {
         public List<Song> songs;
     }
 
-    public class StudioPerformanceResponse {
+    public class PerformanceResponse {
         public Performance performance;
     }
 }

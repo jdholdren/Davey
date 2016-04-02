@@ -2,7 +2,6 @@ package mindlesscreations.dmbcontext.presentation.internal.di.modules;
 
 import dagger.Module;
 import dagger.Provides;
-import mindlesscreations.dmbcontext.domain.interactors.GetAlternatePerfLyrics;
 import mindlesscreations.dmbcontext.domain.interactors.GetPerformanceLyrics;
 import mindlesscreations.dmbcontext.execution.PostExecutionThread;
 import mindlesscreations.dmbcontext.execution.ThreadExecutor;
@@ -19,10 +18,8 @@ public class LyricsModule {
     }
 
     @Provides
-    public LyricsContract.Presenter providePresenter(
-            GetPerformanceLyrics.Factory studioFactory,
-            GetAlternatePerfLyrics.Factory altFactory) {
-        return new LyricsPresenter(this.activity, studioFactory, altFactory);
+    public LyricsContract.Presenter providePresenter(GetPerformanceLyrics.Factory interactorFactory) {
+        return new LyricsPresenter(this.activity, interactorFactory);
     }
 
     @Provides
@@ -31,13 +28,5 @@ public class LyricsModule {
             PostExecutionThread postExecutionThread,
             GetPerformanceLyrics.GetPerformanceRepo repo) {
         return new GetPerformanceLyrics.Factory(executor, postExecutionThread, repo);
-    }
-
-    @Provides
-    public GetAlternatePerfLyrics.Factory provideAlternateFactory(
-            ThreadExecutor executor,
-            PostExecutionThread postExecutionThread,
-            GetPerformanceLyrics.GetPerformanceRepo repo) {
-        return new GetAlternatePerfLyrics.Factory(executor, postExecutionThread, repo);
     }
 }

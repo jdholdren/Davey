@@ -52,30 +52,23 @@ public class AlbumRepository
     }
 
     @Override
-    public Observable<Performance> getStudioPerformance(int songId) {
+    public Observable<Performance> getPerformance(int songId, final int perfId) {
         final AlbumApi albumApi = this.api;
         final int songID = songId;
+        final int perfID = perfId;
 
         return Observable.create(new Observable.OnSubscribe<Performance>() {
             @Override
             public void call(Subscriber<? super Performance> subscriber) {
-                Performance performance = albumApi.findStudioPerformance(songID);
+                Performance performance;
+
+                if (perfId > -1) {
+                    performance = albumApi.findPerformanceById(perfID);
+                } else {
+                    performance = albumApi.findStudioPerformance(songID);
+                }
+
                 subscriber.onNext(performance);
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<Performance>> getAlternatePerformances(int songId) {
-        final AlbumApi albumApi = this.api;
-        final int songID = songId;
-
-        return Observable.create(new Observable.OnSubscribe<List<Performance>>() {
-            @Override
-            public void call(Subscriber<? super List<Performance>> subscriber) {
-                List<Performance> alts = albumApi.findAllAlternateLyrics(songID);
-                subscriber.onNext(alts);
                 subscriber.onCompleted();
             }
         });
@@ -85,6 +78,6 @@ public class AlbumRepository
         List<Album> findAll();
         List<Song> findAllByAlbum(String albumName);
         Performance findStudioPerformance(int songId);
-        List<Performance> findAllAlternateLyrics(int songId);
+        Performance findPerformanceById(int perfId);
     }
 }

@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 import mindlesscreations.dmbcontext.R;
@@ -24,6 +22,11 @@ public class AlternatePerfAdapter extends ArrayAdapter<Performance> {
     }
 
     @Override
+    public int getCount() {
+        return performances.size();
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final AlternatePerfHolder viewHolder;
 
@@ -35,13 +38,22 @@ public class AlternatePerfAdapter extends ArrayAdapter<Performance> {
             convertView.setTag(viewHolder);
         }
 
-        viewHolder.alternateText.setText(this.performances.get(position).getPeformanceDate().toString());
+        String text;
+        if (this.performances.get(position).getPerformanceDate() == null) {
+            text = "Studio Version";
+        } else {
+            text = this.performances.get(position).getPerformanceDate().toString();
+        }
+
+        viewHolder.alternateText.setText(text);
+        viewHolder.performance = this.performances.get(position);
 
         return convertView;
     }
 
     public class AlternatePerfHolder {
         public TextView alternateText;
+        public Performance performance;
 
         public AlternatePerfHolder(View view) {
             this.alternateText = (TextView) view.findViewById(R.id.alternate_date_text);

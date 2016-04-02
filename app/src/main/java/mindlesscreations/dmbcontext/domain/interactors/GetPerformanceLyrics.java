@@ -1,7 +1,5 @@
 package mindlesscreations.dmbcontext.domain.interactors;
 
-import java.util.List;
-
 import mindlesscreations.dmbcontext.domain.entities.Performance;
 import mindlesscreations.dmbcontext.execution.PostExecutionThread;
 import mindlesscreations.dmbcontext.execution.ThreadExecutor;
@@ -9,27 +7,28 @@ import rx.Observable;
 
 public class GetPerformanceLyrics extends UseCase {
 
-    protected GetPerformanceRepo repo;
-    protected int songId;
+    private GetPerformanceRepo repo;
+    private int songId;
+    private int perfId;
 
     public GetPerformanceLyrics(ThreadExecutor executor, PostExecutionThread postThread,
-                                GetPerformanceRepo repo, int songId) {
+                                GetPerformanceRepo repo, int songId, int perfId) {
         super(executor, postThread);
 
         this.repo = repo;
         this.songId = songId;
+        this.perfId = perfId;
     }
 
     @Override
     protected Observable buildUseCaseObservable() {
         final GetPerformanceRepo repository = this.repo;
 
-        return repository.getStudioPerformance(this.songId);
+        return repository.getPerformance(this.songId, this.perfId);
     }
 
     public interface GetPerformanceRepo {
-        Observable<Performance> getStudioPerformance(int songId);
-        Observable<List<Performance>> getAlternatePerformances(int songId);
+        Observable<Performance> getPerformance(int songId, int perfId);
     }
 
     public static class Factory {
@@ -43,12 +42,13 @@ public class GetPerformanceLyrics extends UseCase {
             this.repo = repo;
         }
 
-        public GetPerformanceLyrics create(int songId) {
+        public GetPerformanceLyrics create(int songId, int perfId) {
             return new GetPerformanceLyrics(
                     this.executor,
                     this.postExecutionThread,
                     this.repo,
-                    songId
+                    songId,
+                    perfId
             );
         }
     }

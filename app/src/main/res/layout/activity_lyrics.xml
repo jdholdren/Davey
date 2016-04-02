@@ -24,33 +24,43 @@
     <ScrollView
         android:id="@+id/textAreaScroller"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:scrollbars="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:padding="5dp">
 
             <TextView
+                android:id="@+id/lyrics_version_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="4dp"
-                android:text="@string/studio_lryics_label"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/lyics_text"
+                android:id="@+id/lyrics_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
+                android:layout_below="@+id/lyrics_version_title"
                 android:scrollbars="vertical" />
 
+            <Button
+                android:id="@+id/show_more_less"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lyrics_text"
+                android:layout_centerHorizontal="true"
+                android:text="@string/show_more" />
+
             <TextView
+                android:id="@+id/alternate_heading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/show_more_less"
                 android:layout_marginTop="4dp"
                 android:text="@string/alternate_lyrics"
                 android:textSize="20sp"
@@ -59,8 +69,10 @@
             <ListView
                 android:id="@+id/alternate_dates"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/alternate_heading" />
+        </RelativeLayout>
     </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>
