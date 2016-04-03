@@ -1,5 +1,7 @@
 package mindlesscreations.dmbcontext.data.apis;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class Api implements AlbumRepository.AlbumApi {
+
+    private static final String LOG_TAG = Api.class.getSimpleName();
 
     private RetrofitApi retrofitApi;
 
@@ -29,7 +33,7 @@ public class Api implements AlbumRepository.AlbumApi {
 
             albums.addAll(res.body().albums);
         } catch(IOException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, e.getMessage());
         }
 
         return albums;
@@ -45,7 +49,7 @@ public class Api implements AlbumRepository.AlbumApi {
 
             songs.addAll(res.body().songs);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, e.getMessage());
         }
 
         return songs;
@@ -60,7 +64,7 @@ public class Api implements AlbumRepository.AlbumApi {
             Response<PerformanceResponse> res = call.execute();
             performance = res.body().performance;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, e.getMessage());
         }
 
         return performance;
@@ -75,10 +79,24 @@ public class Api implements AlbumRepository.AlbumApi {
             Response<PerformanceResponse> res = call.execute();
             performance = res.body().performance;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, e.getMessage());
         }
 
         return performance;
+    }
+
+    @Override
+    public List<Performance> searchPerformances(int songId, String query) {
+        List<Performance> performances = new ArrayList<>();
+        Call<SearchResponse> call = this.retrofitApi.search(query, songId);
+
+        try {
+            Response<SearchResponse> res = call.execute();
+            performances = res.body().searchResults;
+        } catch (IOException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        }
+        return performances;
     }
 
     public class ListAlbumResponse {
@@ -91,5 +109,9 @@ public class Api implements AlbumRepository.AlbumApi {
 
     public class PerformanceResponse {
         public Performance performance;
+    }
+
+    public class SearchResponse {
+        public List<Performance> searchResults;
     }
 }

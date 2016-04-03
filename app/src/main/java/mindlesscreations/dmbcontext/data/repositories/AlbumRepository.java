@@ -8,13 +8,15 @@ import mindlesscreations.dmbcontext.domain.entities.Song;
 import mindlesscreations.dmbcontext.domain.interactors.GetAlbums;
 import mindlesscreations.dmbcontext.domain.interactors.GetPerformanceLyrics;
 import mindlesscreations.dmbcontext.domain.interactors.GetSongsOnAlbum;
+import mindlesscreations.dmbcontext.domain.interactors.SearchLyrics;
 import rx.Observable;
 import rx.Subscriber;
 
 public class AlbumRepository
         implements GetAlbums.GetAllAlbumsRepo,
         GetSongsOnAlbum.GetSongsOnAlbumRepo,
-        GetPerformanceLyrics.GetPerformanceRepo {
+        GetPerformanceLyrics.GetPerformanceRepo,
+        SearchLyrics.SearchRepo {
 
     private AlbumApi api;
 
@@ -74,10 +76,28 @@ public class AlbumRepository
         });
     }
 
+    @Override
+    public Observable<List<Performance>> searchLyrics(int songId, String query) {
+        final AlbumApi albumApi = this.api;
+        final int songID = songId;
+        final String queryString = query;
+
+        return Observable.create(new Observable.OnSubscribe<List<Performance>>() {
+            @Override
+            public void call(Subscriber<? super List<Performance>> subscriber) {
+                List<Performance> performances = albumApi.searchPerformances(songID, queryString);
+
+                subscriber.onNext(performances);
+                subscriber.onCompleted();
+            }
+        });
+    }
+
     public interface AlbumApi {
         List<Album> findAll();
         List<Song> findAllByAlbum(String albumName);
         Performance findStudioPerformance(int songId);
         Performance findPerformanceById(int perfId);
+        List<Performance> searchPerformances(int songId, String query);
     }
 }

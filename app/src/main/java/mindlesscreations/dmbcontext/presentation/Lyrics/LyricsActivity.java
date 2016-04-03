@@ -10,6 +10,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.SearchEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 
 import mindlesscreations.dmbcontext.R;
 import mindlesscreations.dmbcontext.domain.entities.Performance;
+import mindlesscreations.dmbcontext.presentation.Search.SearchActivity;
 import mindlesscreations.dmbcontext.presentation.base.BaseActivity;
 import mindlesscreations.dmbcontext.presentation.internal.di.components.DaggerLyricsComponent;
 import mindlesscreations.dmbcontext.presentation.internal.di.components.LyricsComponent;
@@ -48,6 +50,7 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
     // If the lyrics have been expanded or not
     private boolean lyricsExpanded;
     private String songName;
+    private int songId;
 
     @Inject
     public LyricsContract.Presenter presenter;
@@ -67,14 +70,14 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
         // Grab the intent
         Intent intent = this.getIntent();
         this.songName = intent.getStringExtra(EXTRA_SONG_NAME).trim();
-        int songId = intent.getIntExtra(EXTRA_SONG_ID, -1);
+        this.songId = intent.getIntExtra(EXTRA_SONG_ID, -1);
         int perfId = intent.getIntExtra(EXTRA_PERFORMANCE_ID, -1);
 
         // Set the title
         this.getSupportActionBar().setTitle(this.songName);
 
         // Grab the lyrics
-        this.presenter.fetchPerformance(songId, perfId);
+        this.presenter.fetchPerformance(this.songId, perfId);
 
         // Attach click logic to expansion
         this.showButton.setOnClickListener(new View.OnClickListener() {
@@ -159,6 +162,7 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
     public void navigateToPerformance(Performance performance) {
         Intent intent = new Intent(this, this.getClass());
         intent.putExtra(EXTRA_PERFORMANCE_ID, performance.getId());
+        intent.putExtra(EXTRA_SONG_ID, performance.getSongId());
         intent.putExtra(EXTRA_SONG_NAME, this.songName);
 
         this.startActivity(intent);
@@ -183,6 +187,15 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
                 searchManager.getSearchableInfo(getComponentName()));
 
         return true;
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            intent.putExtra(SearchActivity.EXTRA_SONG_ID, this.songId);
+        }
+
+        super.startActivity(intent);
     }
 
     @Override

@@ -17,4 +17,7 @@ public interface RetrofitApi {
 
     @GET("performances")
     Call<Api.PerformanceResponse> getPerformance(@Query("perf_id") int perfId);
+
+    @GET("search")
+    Call<Api.SearchResponse> search(@Query("search") String query, @Query("song_id") int songId);
 }
