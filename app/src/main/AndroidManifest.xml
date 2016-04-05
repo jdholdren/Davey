@@ -35,6 +35,7 @@
         <activity
             android:name=".presentation.Lyrics.LyricsActivity"
             android:label="@string/title_activity_lyrics"
+            android:launchMode="singleTop"
             android:parentActivityName=".presentation.AlbumSongListing.AlbumSongListingActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

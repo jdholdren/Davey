@@ -2,6 +2,8 @@ package mindlesscreations.dmbcontext.domain.entities;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +48,15 @@ public class Performance {
 
     public Date getPerformanceDate() {
         return peformanceDate;
+    }
+
+    public String getFormattedDate() {
+        if (this.peformanceDate != null) {
+            Format formatter = new SimpleDateFormat("MM/dd/yyyy");
+            return formatter.format(this.peformanceDate);
+        } else {
+            return "";
+        }
     }
 
     public int getSongId() {

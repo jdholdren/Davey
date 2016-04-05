@@ -14,6 +14,7 @@ public interface LyricsContract {
     interface View {
         void displayLyrics(Performance performace);
         void displayAlternates(List<Performance> performance);
+        void displayEmptyAlternatives();
         void navigateToPerformance(Performance performance);
     }
 }

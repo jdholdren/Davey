@@ -10,4 +10,7 @@
     <string name="show_less">Show Less</string>
     <string name="search_title">Search For Lyrics</string>
     <string name="search_hint">Saerch for a Lyric</string>
+    <string name="search_results_label">Search Results</string>
+    <string name="search_results_empty">No results found</string>
+    <string name="alternate_heading_empty">No alternate lyrics</string>
 </resources>

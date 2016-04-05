@@ -92,7 +92,19 @@ public class Api implements AlbumRepository.AlbumApi {
 
         try {
             Response<SearchResponse> res = call.execute();
-            performances = res.body().searchResults;
+
+            // The api currently returns duplicates
+            List<Performance> unfiltered = res.body().searchResults;
+
+            // Filter out by keeping track of id's that have already been added
+            List<Integer> addedIds = new ArrayList<>();
+
+            for (Performance perf : unfiltered) {
+                if (!addedIds.contains(perf.getId())) { // Not existing id, add it
+                    performances.add(perf);
+                    addedIds.add(perf.getId());
+                } // Otherwise do not
+            }
         } catch (IOException e) {
             Log.e(LOG_TAG, e.getMessage());
         }

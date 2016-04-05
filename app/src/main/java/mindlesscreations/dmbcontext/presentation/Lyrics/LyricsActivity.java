@@ -4,21 +4,21 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.SearchEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import mindlesscreations.dmbcontext.R;
 import mindlesscreations.dmbcontext.domain.entities.Performance;
 import mindlesscreations.dmbcontext.presentation.Search.SearchActivity;
+import mindlesscreations.dmbcontext.presentation.animation.LayoutHeightAnimation;
 import mindlesscreations.dmbcontext.presentation.base.BaseActivity;
 import mindlesscreations.dmbcontext.presentation.internal.di.components.DaggerLyricsComponent;
 import mindlesscreations.dmbcontext.presentation.internal.di.components.LyricsComponent;
@@ -42,10 +43,14 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
     public static final String EXTRA_PERFORMANCE_ID
             = "mindlesscreations.dmbcontext.presentation.Lyrics.extras.PERF_ID";
 
+    public static final String EXTRA_SEARCH_QUERY
+            = "mindlesscreations.dmbcontext.presentation.Lyrics.extras.SEARCH_QUERY";
+
     private TextView lyrics;
     private ListView alternateLyrics;
     private TextView lyricsVersionTitle;
-    private Button showButton;
+    private FloatingActionButton showButton;
+    private TextView alternateHeading;
 
     // If the lyrics have been expanded or not
     private boolean lyricsExpanded;
@@ -62,10 +67,13 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Grab all elements
         this.lyrics = (TextView) this.findViewById(R.id.lyrics_text);
         this.alternateLyrics = (ListView) this.findViewById(R.id.alternate_dates);
         this.lyricsVersionTitle = (TextView) this.findViewById(R.id.lyrics_version_title);
-        this.showButton = (Button) this.findViewById(R.id.show_more_less);
+        this.showButton = (FloatingActionButton) this.findViewById(R.id.show_more_less);
+        this.alternateHeading = (TextView) this.findViewById(R.id.alternate_heading);
 
         // Grab the intent
         Intent intent = this.getIntent();
@@ -109,7 +117,7 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
         if (performance.isStudio()) {
             title = this.getResources().getString(R.string.studio_lryics_label);
         } else {
-            title = performance.getPerformanceDate().toString();
+            title = performance.getFormattedDate();
         }
 
         this.lyricsVersionTitle.setText(title);
@@ -123,8 +131,19 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
         int sizeInDp = 50;
         int sizeInPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 sizeInDp, this.getResources().getDisplayMetrics());
+
+        // Add pixels to prevent scrolling behavior
+        sizeInPx += 2;
         params.height = adapter.getCount() * sizeInPx;
         this.alternateLyrics.setLayoutParams(params);
+    }
+
+    /**
+     * If there's no alternate performance, change the message
+     */
+    @Override
+    public void displayEmptyAlternatives() {
+        this.alternateHeading.setText(R.string.alternate_heading_empty);
     }
 
     /**
@@ -139,22 +158,37 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
         int maxSize = this.lyrics.getLineHeight() * this.lyrics.getLineCount();
 
         ViewGroup.LayoutParams params = this.lyrics.getLayoutParams();
-
-        // The button text to set
-        String buttonText;
+        final OvershootInterpolator interpolator = new OvershootInterpolator();
+        float rotation;
 
         if (this.lyricsExpanded) {
             // Close the lyrics section
             params.height = minInPx;
-            buttonText = this.getResources().getString(R.string.show_more);
+
+            // Set the rotation of the button
+            rotation = 0f;
         } else {
             // Open the lyrics section
             params.height = maxSize;
-            buttonText = this.getResources().getString(R.string.show_less);
+
+            // Tilted 45 degrees to resemble an X
+            rotation = 45f;
         }
 
-        this.lyrics.setLayoutParams(params);
-        this.showButton.setText(buttonText);
+        // Animate the rotation of the button
+        ViewCompat.animate(this.showButton)
+                .rotation(rotation)
+                .withLayer()
+                .setDuration(500)
+                .setInterpolator(interpolator)
+                .start();
+
+        // Expand/Collapse the lyrics text
+        Animation animation = new LayoutHeightAnimation(this.lyrics, params.height);
+        animation.setDuration(500);
+        this.lyrics.startAnimation(animation);
+
+        // this.lyrics.setLayoutParams(params);
         this.lyricsExpanded = !this.lyricsExpanded;
     }
 
@@ -193,6 +227,7 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
     public void startActivity(Intent intent) {
         if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
             intent.putExtra(SearchActivity.EXTRA_SONG_ID, this.songId);
+            intent.putExtra(SearchActivity.EXTRA_SONG_NAME, this.songName);
         }
 
         super.startActivity(intent);

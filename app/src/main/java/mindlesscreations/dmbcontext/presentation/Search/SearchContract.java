@@ -7,6 +7,7 @@ import mindlesscreations.dmbcontext.domain.entities.Performance;
 public interface SearchContract {
     interface View {
         void displayResults(List<Performance> performances);
+        void displayEmpty();
     }
 
     interface Presenter {

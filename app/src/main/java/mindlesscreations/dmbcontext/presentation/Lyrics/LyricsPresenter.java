@@ -49,7 +49,12 @@ public class LyricsPresenter implements LyricsContract.Presenter {
         @Override
         public void onNext(Performance performance) {
             LyricsPresenter.this.view.displayLyrics(performance);
-            LyricsPresenter.this.view.displayAlternates(performance.getAlternativePerformances());
+
+            if (performance.getAlternativePerformances().size() > 0) {
+                LyricsPresenter.this.view.displayAlternates(performance.getAlternativePerformances());
+            } else {
+                LyricsPresenter.this.view.displayEmptyAlternatives();
+            }
         }
     }
 }

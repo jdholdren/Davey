@@ -28,14 +28,14 @@ public class SearchPresenter implements SearchContract.Presenter {
     }
 
     public class SearchLyricsSubscriber extends DefaultSubscriber<List<Performance>> {
-        @Override
-        public void onError(Throwable e) {
-            super.onError(e);
-        }
 
         @Override
         public void onNext(List<Performance> performances) {
-            super.onNext(performances);
+            if (performances.size() > 0) {
+                SearchPresenter.this.view.displayResults(performances);
+            } else {
+                SearchPresenter.this.view.displayEmpty();
+            }
         }
     }
 
