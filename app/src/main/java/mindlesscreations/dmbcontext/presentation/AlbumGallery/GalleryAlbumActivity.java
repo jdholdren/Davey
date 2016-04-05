@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.util.List;
@@ -13,6 +16,7 @@ import javax.inject.Inject;
 
 import mindlesscreations.dmbcontext.R;
 import mindlesscreations.dmbcontext.domain.entities.Album;
+import mindlesscreations.dmbcontext.presentation.About.AboutActivity;
 import mindlesscreations.dmbcontext.presentation.AlbumSongListing.AlbumSongListingActivity;
 import mindlesscreations.dmbcontext.presentation.base.BaseActivity;
 import mindlesscreations.dmbcontext.presentation.internal.di.components.AlbumGalleryComponent;
@@ -55,6 +59,24 @@ public class GalleryAlbumActivity extends BaseActivity<AlbumGalleryComponent>
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.about_item:
+                this.navigateToAbout();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         this.presenter.destroy();
@@ -70,6 +92,11 @@ public class GalleryAlbumActivity extends BaseActivity<AlbumGalleryComponent>
         Intent intent = new Intent(this, AlbumSongListingActivity.class);
         intent.putExtra(AlbumSongListingActivity.EXTRA_ALBUM_NAME, albumName);
 
+        this.startActivity(intent);
+    }
+
+    private void navigateToAbout() {
+        Intent intent = new Intent(this, AboutActivity.class);
         this.startActivity(intent);
     }
 

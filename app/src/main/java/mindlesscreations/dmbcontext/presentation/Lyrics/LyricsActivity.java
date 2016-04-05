@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -49,7 +50,7 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
     private TextView lyrics;
     private ListView alternateLyrics;
     private TextView lyricsVersionTitle;
-    private FloatingActionButton showButton;
+    private Button showButton;
     private TextView alternateHeading;
 
     // If the lyrics have been expanded or not
@@ -72,7 +73,7 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
         this.lyrics = (TextView) this.findViewById(R.id.lyrics_text);
         this.alternateLyrics = (ListView) this.findViewById(R.id.alternate_dates);
         this.lyricsVersionTitle = (TextView) this.findViewById(R.id.lyrics_version_title);
-        this.showButton = (FloatingActionButton) this.findViewById(R.id.show_more_less);
+        this.showButton = (Button) this.findViewById(R.id.show_more_less);
         this.alternateHeading = (TextView) this.findViewById(R.id.alternate_heading);
 
         // Grab the intent
@@ -158,30 +159,23 @@ public class LyricsActivity extends BaseActivity<LyricsComponent> implements Lyr
         int maxSize = this.lyrics.getLineHeight() * this.lyrics.getLineCount();
 
         ViewGroup.LayoutParams params = this.lyrics.getLayoutParams();
-        final OvershootInterpolator interpolator = new OvershootInterpolator();
-        float rotation;
+        String text;
 
         if (this.lyricsExpanded) {
             // Close the lyrics section
             params.height = minInPx;
 
-            // Set the rotation of the button
-            rotation = 0f;
+            // Set the text
+            text = this.getResources().getString(R.string.show_more);
         } else {
             // Open the lyrics section
             params.height = maxSize;
 
-            // Tilted 45 degrees to resemble an X
-            rotation = 45f;
+            text = this.getResources().getString(R.string.show_less);
         }
 
-        // Animate the rotation of the button
-        ViewCompat.animate(this.showButton)
-                .rotation(rotation)
-                .withLayer()
-                .setDuration(500)
-                .setInterpolator(interpolator)
-                .start();
+        // Set the text on the button
+        this.showButton.setText(text);
 
         // Expand/Collapse the lyrics text
         Animation animation = new LayoutHeightAnimation(this.lyrics, params.height);
