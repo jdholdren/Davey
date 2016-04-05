@@ -13,4 +13,6 @@
     <string name="search_results_label">Search Results</string>
     <string name="search_results_empty">No results found</string>
     <string name="alternate_heading_empty">No alternate lyrics</string>
+    <string name="title_activity_about">AboutActivity</string>
+    <string name="copyright_statment">All lyrics and album art are under copyright Colden Grey, Ltd., Bama Rags Records, Red Light Management, RCA and/or BMG.</string>
 </resources>
